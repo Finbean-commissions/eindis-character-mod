@@ -1,9 +1,9 @@
 <players nameimageroot="gfx/ui/boss/" portraitroot="gfx/ui/stage/" root="gfx/characters/costumes/">
-	<player hp="6" bombs="1" name="One"
-	nameimage="One_nane_image.png" portrait="One_portrait_image.png" skin="One.png" skinColor="-1"
+	<player hp="6" bombs="1" name="Eindis"
+	nameimage="Eindis_nane_image.png" portrait="Eindis_portrait_image.png" skin="Eindis.png" skinColor="-1"
 	items="" birthright="???"
 	/>
-	<player hp="6" bombs="1" name="Two" bSkinParent="One"
+	<player hp="6" bombs="1" name="Two" bSkinParent="Eindis"
 	nameimage="Two_nane_image.png" portrait="Two_portrait_image.png" skin="Two.png" skinColor="-1"
 	items="" birthright="???"
 	/>

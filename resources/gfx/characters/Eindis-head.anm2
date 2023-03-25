@@ -1,8 +1,8 @@
 <AnimatedActor>
-	<Info CreatedBy="robot" CreatedOn="19/03/2023 17:05:33" Version="122" Fps="30"/>
+	<Info CreatedBy="robot" CreatedOn="11/03/2023 21:48:16" Version="120" Fps="30"/>
 	<Content>
 		<Spritesheets>
-			<Spritesheet Path="costumes\Two-head.png" Id="0"/>
+			<Spritesheet Path="costumes\Eindis-head.png" Id="0"/>
 		</Spritesheets>
 		<Layers>
 			<Layer Name="head0" Id="0" SpritesheetId="0"/>
