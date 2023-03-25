@@ -1,0 +1,4 @@
+<costumes anm2root="gfx/characters/">
+	<costume anm2path="One-head.anm2" type="none"/>
+	<costume anm2path="Two-head.anm2" type="none"/>
+</costumes>
