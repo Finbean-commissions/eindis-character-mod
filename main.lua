@@ -44,10 +44,7 @@ function mod:evalCache(player, cacheFlag) -- this function applies all the stats
 	---@param luck number
 	---@param tearcolor Color
 	---@param flying boolean
-	---@param tf1 TearFlags
-	---@param tf2 TearFlags
-	---@param tf3 TearFlags
-	local function addStats(name, speed, tears, damage, range, shotspeed, luck, tearcolor, flying, tf1, tf2, tf3) -- This is the function used to determine the stats of your character, you can simply leave it as you will use it later!
+	local function addStats(name, speed, tears, damage, range, shotspeed, luck, tearcolor, flying) -- This is the function used to determine the stats of your character, you can simply leave it as you will use it later!
 		if player:GetPlayerType(name) then
 			if cacheFlag == CacheFlag.CACHE_SPEED then
 				player.MoveSpeed = player.MoveSpeed + speed
@@ -58,7 +55,7 @@ function mod:evalCache(player, cacheFlag) -- this function applies all the stats
 			if cacheFlag == CacheFlag.CACHE_DAMAGE then
 				player.Damage = player.Damage + damage
 			end
-			if cacheFlag == CacheFlag.CACHE_DAMAGE then
+			if cacheFlag == CacheFlag.CACHE_RANGE then
 				player.TearRange = player.TearRange + range * 40
 			end
 			if cacheFlag == CacheFlag.CACHE_SHOTSPEED then
@@ -73,13 +70,10 @@ function mod:evalCache(player, cacheFlag) -- this function applies all the stats
 			if cacheFlag == CacheFlag.CACHE_FLYING and flying then
 				player.CanFly = true
 			end
-			if cacheFlag == CacheFlag.CACHE_TEARFLAG then
-				player.TearFlags = player.TearFlags | tf1 | tf2 | tf3
-			end
 		end
 	end
-	mod.Eindis_Stats = addStats("Eindis", 0, -1, 2, 0, 0, 0, Color(1, 1, 1, 1.0, 0, 0, 0), false, TearFlags.TEAR_CHAIN, TearFlags.TEAR_SPECTRAL, TearFlags.TEAR_PIERCING)
-	mod.ThePolycule_Stats = addStats("The Polycule", 0, 0, 0, 0, 0, 0, Color(1, 1, 1, 1.0, 0, 0, 0), false, TearFlags.TEAR_NORMAL, TearFlags.TEAR_NORMAL, TearFlags.TEAR_NORMAL)
+	mod.Eindis_Stats = addStats("Eindis", 0, -1, 2, 0, 0, 0, Color(1, 1, 1, 1.0, 0, 0, 0), false)
+	mod.ThePolycule_Stats = addStats("The Polycule", 0, 0, 0, 0, 0, 0, Color(1, 1, 1, 1.0, 0, 0, 0), false)
 end
 mod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE,mod.evalCache)
 
@@ -88,7 +82,6 @@ function mod:UseItem(item, _, player, UseFlags, Slot, _)
 		if item == mod.Items.Active then
 			for i = 1,25 do
 				local tear = Isaac.Spawn(EntityType.ENTITY_TEAR, TearVariant.BLUE, 0, player.Position, RandomVector():Resized(10), nil):ToTear()
-				tear:ClearTearFlags(TearFlags.TEAR_CHAIN)
 				tear:AddTearFlags(TearFlags.TEAR_ACCELERATE | TearFlags.TEAR_SPECTRAL | TearFlags.TEAR_PIERCING)
 				tear.CollisionDamage = player.Damage * 4
 			end
@@ -97,6 +90,27 @@ function mod:UseItem(item, _, player, UseFlags, Slot, _)
 end
 mod:AddCallback(ModCallbacks.MC_USE_ITEM, mod.UseItem)
 
+function mod:onTear(players_tear)
+    for playerNum = 1, game:GetNumPlayers() do
+        local player = game:GetPlayer(playerNum)
+		if player:GetName() == mod.Eindis_Character.NAME then
+			---@param vector Vector()
+			local function spawnClottyTear(vector)
+				local tear = Isaac.Spawn(EntityType.ENTITY_TEAR, TearVariant.BLUE, 0, player.Position, vector, nil):ToTear()
+				tear.CollisionDamage = player.Damage
+				tear.SizeMulti = players_tear.SizeMulti
+				tear.Variant = TearVariant.BLOOD
+				tear:Update()
+			end
+			spawnClottyTear(Vector(-(player.ShotSpeed*10), 0))
+			spawnClottyTear(Vector((player.ShotSpeed*10), 0))
+			spawnClottyTear(Vector(0, -(player.ShotSpeed*10)))
+			spawnClottyTear(Vector(0, (player.ShotSpeed*10)))
+		end
+	end
+end
+mod:AddCallback(ModCallbacks.MC_POST_FIRE_TEAR, mod.onTear)
+
 function mod:playerSpawn(player)
     if player:GetName() == mod.Eindis_Character.NAME then
         player:AddNullCostume(Isaac.GetCostumeIdByPath("gfx/characters/Eindis-head.anm2"))
@@ -104,6 +118,7 @@ function mod:playerSpawn(player)
     end
     if player:GetName() == mod.ThePolycule_Character.NAME then
         player:AddNullCostume(Isaac.GetCostumeIdByPath("gfx/characters/The Polycule-head.anm2"))
+		player:AddTearFlags(TearFlags.TEAR_CHAIN | TearFlags.TEAR_SPECTRAL |TearFlags.TEAR_PIERCING)
     end
 end
 mod:AddCallback(ModCallbacks.MC_POST_PLAYER_INIT, mod.playerSpawn)
