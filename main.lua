@@ -21,7 +21,6 @@ local function addCharacter(name, isTainted) -- This is the function used to det
 	local character = { -- these stats are added to Isaac's base stats.
 		NAME = name,
 		ID = Isaac.GetPlayerTypeByName(name, isTainted), -- string, boolean
-		Costume_ID = Isaac.GetCostumeIdByPath("gfx/characters/"..name.."-head.anm2"),
 	}
 	return character
 end
@@ -70,17 +69,17 @@ function mod:evalCache(player, cacheFlag) -- this function applies all the stats
 			end
 		end
 	end
-	mod.Eindis_Stats = addStats("Eindis", 0, 0, 0, 0, 0, 0, Color(1, 1, 1, 1.0, 0, 0, 0), false, TearFlags.TEAR_NORMAL)
+	mod.Eindis_Stats = addStats("Eindis", 0, -1, 2, 0, 0, 0, Color(1, 1, 1, 1.0, 0, 0, 0), false, TearFlags.TEAR_NORMAL)
 	mod.ThePolycule_Stats = addStats("The Polycule", 0, 0, 0, 0, 0, 0, Color(1, 1, 1, 1.0, 0, 0, 0), false, TearFlags.TEAR_NORMAL)
 end
 mod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE,mod.evalCache)
 
 function mod:playerSpawn(player)
-    if player:GetPlayerType(mod.Eindis_Character.NAME) then
-        player:AddNullCostume(mod.Eindis_Character.Costume_ID)
+    if player:GetName() == mod.Eindis_Character.NAME then
+        player:AddNullCostume(Isaac.GetCostumeIdByPath("gfx/characters/Eindis-head.anm2"))
     end
-    if player:GetPlayerType(mod.ThePolycule_Character.NAME) then
-        player:AddNullCostume(mod.ThePolycule_Character.Costume_ID)
+    if player:GetName() == mod.ThePolycule_Character.NAME then
+        player:AddNullCostume(Isaac.GetCostumeIdByPath("gfx/characters/The Polycule-head.anm2"))
     end
 end
 mod:AddCallback(ModCallbacks.MC_POST_PLAYER_INIT, mod.playerSpawn)

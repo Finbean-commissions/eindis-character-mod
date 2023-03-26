@@ -3,8 +3,8 @@
 	nameimage="Eindis_nane_image.png" portrait="Eindis_portrait_image.png" skin="Eindis.png" skinColor="-1"
 	items="" birthright="???"
 	/>
-	<player hp="6" bombs="1" name="Two" bSkinParent="Eindis"
-	nameimage="Two_nane_image.png" portrait="Two_portrait_image.png" skin="Two.png" skinColor="-1"
+	<player hp="6" bombs="1" name="The Polycule" bSkinParent="Eindis"
+	nameimage="The Polycule_nane_image.png" portrait="The Polycule_portrait_image.png" skin="The Polycule.png" skinColor="-1"
 	items="" birthright="???"
 	/>
 </players>

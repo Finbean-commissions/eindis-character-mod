@@ -1,5 +1,5 @@
 <AnimatedActor>
-	<Info CreatedBy="robot" CreatedOn="11/03/2023 21:48:16" Version="120" Fps="30"/>
+	<Info CreatedBy="robot" CreatedOn="26/03/2023 00:18:54" Version="124" Fps="30"/>
 	<Content>
 		<Spritesheets>
 			<Spritesheet Path="costumes\Eindis-head.png" Id="0"/>
