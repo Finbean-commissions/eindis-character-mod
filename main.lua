@@ -84,6 +84,9 @@ function mod:UseItem(item, _, player, UseFlags, Slot, _)
 				local tear = Isaac.Spawn(EntityType.ENTITY_TEAR, TearVariant.BLUE, 0, player.Position, RandomVector():Resized(10), nil):ToTear()
 				tear:AddTearFlags(TearFlags.TEAR_ACCELERATE | TearFlags.TEAR_SPECTRAL | TearFlags.TEAR_PIERCING)
 				tear.CollisionDamage = player.Damage * 4
+				tear.Scale = player.Damage / 8
+				tear:ChangeVariant(TearVariant.BLOOD)
+				tear:Update()
 			end
         end
     end
@@ -98,7 +101,7 @@ function mod:onTear(players_tear)
 			local function spawnClottyTear(vector)
 				local tear = Isaac.Spawn(EntityType.ENTITY_TEAR, TearVariant.BLUE, 0, player.Position, vector, nil):ToTear()
 				tear.CollisionDamage = player.Damage
-				tear.SizeMulti = players_tear.SizeMulti
+				tear.Scale = players_tear.Scale / 1.5
 				tear:ChangeVariant(TearVariant.BLOOD)
 				tear:Update()
 			end
@@ -106,10 +109,16 @@ function mod:onTear(players_tear)
 			players_tear:ChangeVariant(TearVariant.BLOOD)
 			players_tear:Update()
 
-			spawnClottyTear(Vector(-(player.ShotSpeed*10), 0))
-			spawnClottyTear(Vector((player.ShotSpeed*10), 0))
-			spawnClottyTear(Vector(0, -(player.ShotSpeed*10)))
-			spawnClottyTear(Vector(0, (player.ShotSpeed*10)))
+			if player:HasCollectible(CollectibleType.COLLECTIBLE_BIRTHRIGHT, false) == true then
+				for i = 1,8 do
+					spawnClottyTear(RandomVector():Resized(player.ShotSpeed*10))
+				end
+			else
+				spawnClottyTear(Vector(-(player.ShotSpeed*10), 0))
+				spawnClottyTear(Vector((player.ShotSpeed*10), 0))
+				spawnClottyTear(Vector(0, -(player.ShotSpeed*10)))
+				spawnClottyTear(Vector(0, (player.ShotSpeed*10)))
+			end
 		end
 	end
 end
@@ -118,7 +127,7 @@ mod:AddCallback(ModCallbacks.MC_POST_FIRE_TEAR, mod.onTear)
 function mod:playerSpawn(player)
     if player:GetName() == mod.Eindis_Character.NAME then
         player:AddNullCostume(Isaac.GetCostumeIdByPath("gfx/characters/Eindis-head.anm2"))
-		player:SetPocketClittyItem(mod.Items.Clitty)
+		player:SetPocketActiveItem(mod.Items.Clitty)
     end
     if player:GetName() == mod.ThePolycule_Character.NAME then
         player:AddNullCostume(Isaac.GetCostumeIdByPath("gfx/characters/The Polycule-head.anm2"))
