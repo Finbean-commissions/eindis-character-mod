@@ -29,7 +29,7 @@ mod.ThePolycule_Character = addCharacter("The Polycule", true)
 
 mod.Items = {
     Passive = Isaac.GetItemIdByName("Passive Example"),
-    Active = Isaac.GetItemIdByName("Active Example"),
+    Clitty = Isaac.GetItemIdByName("Clitty"),
     Trinket = Isaac.GetTrinketIdByName("Trinket Example"),
     Card = Isaac.GetCardIdByName("Card Example"),
 }
@@ -72,14 +72,14 @@ function mod:evalCache(player, cacheFlag) -- this function applies all the stats
 			end
 		end
 	end
-	mod.Eindis_Stats = addStats("Eindis", 0, -1, 2, 0, 0, 0, Color(1, 1, 1, 1.0, 0, 0, 0), false)
+	mod.Eindis_Stats = addStats("Eindis", 0, -1.5, 4, 0, 0, 0, Color(1, 1, 1, 1.0, 0, 0, 0), false)
 	mod.ThePolycule_Stats = addStats("The Polycule", 0, 0, 0, 0, 0, 0, Color(1, 1, 1, 1.0, 0, 0, 0), false)
 end
 mod:AddCallback(ModCallbacks.MC_EVALUATE_CACHE,mod.evalCache)
 
 function mod:UseItem(item, _, player, UseFlags, Slot, _)
 	if UseFlags & UseFlag.USE_OWNED == UseFlag.USE_OWNED then
-		if item == mod.Items.Active then
+		if item == mod.Items.Clitty then
 			for i = 1,25 do
 				local tear = Isaac.Spawn(EntityType.ENTITY_TEAR, TearVariant.BLUE, 0, player.Position, RandomVector():Resized(10), nil):ToTear()
 				tear:AddTearFlags(TearFlags.TEAR_ACCELERATE | TearFlags.TEAR_SPECTRAL | TearFlags.TEAR_PIERCING)
@@ -99,9 +99,13 @@ function mod:onTear(players_tear)
 				local tear = Isaac.Spawn(EntityType.ENTITY_TEAR, TearVariant.BLUE, 0, player.Position, vector, nil):ToTear()
 				tear.CollisionDamage = player.Damage
 				tear.SizeMulti = players_tear.SizeMulti
-				tear.Variant = TearVariant.BLOOD
+				tear:ChangeVariant(TearVariant.BLOOD)
 				tear:Update()
 			end
+
+			players_tear:ChangeVariant(TearVariant.BLOOD)
+			players_tear:Update()
+
 			spawnClottyTear(Vector(-(player.ShotSpeed*10), 0))
 			spawnClottyTear(Vector((player.ShotSpeed*10), 0))
 			spawnClottyTear(Vector(0, -(player.ShotSpeed*10)))
@@ -114,7 +118,7 @@ mod:AddCallback(ModCallbacks.MC_POST_FIRE_TEAR, mod.onTear)
 function mod:playerSpawn(player)
     if player:GetName() == mod.Eindis_Character.NAME then
         player:AddNullCostume(Isaac.GetCostumeIdByPath("gfx/characters/Eindis-head.anm2"))
-		player:SetPocketActiveItem(mod.Items.Active)
+		player:SetPocketClittyItem(mod.Items.Clitty)
     end
     if player:GetName() == mod.ThePolycule_Character.NAME then
         player:AddNullCostume(Isaac.GetCostumeIdByPath("gfx/characters/The Polycule-head.anm2"))
@@ -122,19 +126,6 @@ function mod:playerSpawn(player)
     end
 end
 mod:AddCallback(ModCallbacks.MC_POST_PLAYER_INIT, mod.playerSpawn)
-
-function mod:newRoom()
-    for playerNum = 1, game:GetNumPlayers() do
-        local player = game:GetPlayer(playerNum)
-
-		if player:GetName() == mod.Eindis_Character.NAME then
-			for i = 1,15 do
-				player:FireTear(player.Position, RandomVector():Resized(10), false, true, false, player, 1.0)
-			end
-		end
-	end
-end
-mod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, mod.newRoom)
 
 ----Anything below this is for unlocks
 --Saving and Loading Data!
